@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Text,View,StyleSheet, FlatList, Image } from 'react-native'
+import { Text,View,StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native'
 import {useRecoilState} from 'recoil'
 import { inputtextwallpaper } from '../atoms/wallpaperInputText';
+import Navbar from './Navbar';
 
-const Screen1 = () => {
+const Screen1 = ({navigation}) => {
   const access_key = "B3HB7ZSVgJuYTI5B8V1u-EO1DhL1XPdvg4Wrtrdqyac";
   const [searchValue, setSearchValue] = useRecoilState(inputtextwallpaper);
   const [imageCollection,setImageCollection]=useState([])
@@ -25,24 +26,27 @@ const Screen1 = () => {
 
 imageCollection.total==0 && setSearchValue('all')
 
+  const ShowWallpaper = (item) => {
+    navigation.navigate('screen2',{clickedImage:`${JSON.stringify(item)}`})
+  }
   return (
     <View style={styles.container}>
+      <Navbar/>
       <Text>{searchValue} related images</Text>
-      <FlatList 
+      <FlatList
         numColumns={2}
         data={imageCollection.results}
-        renderItem={({ item }) => 
+        renderItem={({ item }) => (
           <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: item.cover_photo.urls.regular }}
-              style={styles.image}
-            />
-           
-
-      </View>
-      }
+            <TouchableOpacity onPress={() => ShowWallpaper(item)}>
+              <Image
+                source={{ uri: item.cover_photo.urls.regular }}
+                style={styles.image}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       />
-
     </View>
   );
 };
